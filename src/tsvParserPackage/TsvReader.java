@@ -55,11 +55,12 @@ public class TsvReader {
         }
         return -1;
     }
-    //
+    // column 개수는 통일되어야하는데, 아닌 경우가 간혹 있었음
+    // /t 처리가 잘못된 것 같은데, column 개수가 통일된 상태인지 확인
     static void checkColumnCount(String target_file){
-        List<String[]> sampleRowList = new ArrayList<>();
-        List<Integer> sampleRowNumber = new ArrayList<>();
-        Set<Integer> RowCountSet = new LinkedHashSet<>();
+        List<String[]> sampleRowList = new ArrayList<>(); // sample row 목록
+        List<Integer> sampleRowNumber = new ArrayList<>(); // sample로 들어간 것들이 몇번째 row인지
+        Set<Integer> columnCountSet = new LinkedHashSet<>(); // 컬럼 개수 종류들 ex) 45, 46 의 경우 컬럼 45개짜리, 컬럼 46개짜리 row, 총 2가지 종류가 있는
         try{
             BufferedReader br = new BufferedReader(new FileReader(target_file));
             int cnt = 0;
@@ -69,7 +70,7 @@ public class TsvReader {
                 if(tar==null)
                     break;
                 String[] arr = tar.split("\t");
-                if(RowCountSet.add(arr.length)){
+                if(columnCountSet.add(arr.length)){
                     sampleRowList.add(arr);
                     sampleRowNumber.add(cnt+1);
                 }
@@ -80,8 +81,8 @@ public class TsvReader {
             e.printStackTrace();
         }
 
-        System.out.print("Row count: ");
-        for(int rowCount : RowCountSet)
+        System.out.print("Column count: ");
+        for(int rowCount : columnCountSet)
             System.out.print(rowCount + ", ");
         System.out.println();
 
